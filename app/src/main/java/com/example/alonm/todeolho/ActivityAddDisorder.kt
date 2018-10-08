@@ -130,6 +130,12 @@ class ActivityAddDisorder : AppCompatActivity() {
             }
 
         }
+
+        add_disorder_image_input.setOnClickListener {
+            val photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            startActivityForResult(photoPickerIntent, 1)
+        }
     }
 
     fun showTimePickerDialog(v: View) {

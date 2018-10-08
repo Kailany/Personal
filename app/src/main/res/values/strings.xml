@@ -44,5 +44,7 @@
     <string name="label_denuncia_anonima">Denúncia anonima!</string>
     <string name="hora_ocorrido">Hora do Ocorrido!</string>
     <string name="perfil_usuario">Perfil do Usuario</string>
+    <string name="data">Data do ocorrido!</string>
+    <string name="desordem_tipo">Qual o tipo de desordem?</string>
 
 </resources>

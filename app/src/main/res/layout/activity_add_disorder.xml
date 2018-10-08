@@ -16,12 +16,28 @@
         android:text="@string/cadastro_denuncia"/>
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/add_disorder_tipo_desordem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/desordem_tipo"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/add_disorder_label_cadastro"/>
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/add_disorder_tipo_desordem_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/add_disorder_tipo_desordem">
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/add_disorder_label_descricao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/descricao"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/add_disorder_label_cadastro"/>
+        app:layout_constraintTop_toBottomOf="@id/add_disorder_tipo_desordem_select"/>
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/add_disorder_descricao"
@@ -59,7 +75,7 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/add_disorder_date_picker"
         android:layout_marginTop="20dp"
-        android:text="@string/hora_ocorrido"
+        android:text="@string/data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="showDatePickerDialog"

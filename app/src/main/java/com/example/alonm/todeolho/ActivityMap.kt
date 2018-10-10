@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -30,39 +31,34 @@ class ActivityMap : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        //Check for internet permission
-        if (checkAndRequestPermissions()) {
-            setUpMap()
-            //define acao do botao + da tela inicial
-            map_disorder_add?.setOnClickListener { view ->
+        checkAndRequestPermissions()
+        setUpMap()
 
-                val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-                val user = prefs.getString("user", "")
-                if (user != null && !user.isEmpty() && !"-".equals(user)) {
-                    val intent = Intent(this, ActivityAddDisorder::class.java)
-                    val position = map.mapCenter as GeoPoint
-                    intent.putExtra("latitude", position.latitude)
-                    intent.putExtra("longitude", position.longitude)
-                    startActivity(intent)
-                } else {
-                    val intent = Intent(this, ActivityLogin::class.java)
-                    startActivity(intent)
-                }
+    }
 
-            }
-
-            map_disorder_back?.setOnClickListener { view ->
-                val intent = Intent(this, ActivityToDeOlho::class.java)
-                startActivity(intent)
-            }
+    public fun addDenuncia(v: View) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val user = prefs.getString("user", "")
+        if (user != null && !user.isEmpty() && !"-".equals(user)) {
+            val intent = Intent(this, ActivityAddDisorder::class.java)
+            val position = map.mapCenter as GeoPoint
+            intent.putExtra("latitude", position.latitude)
+            intent.putExtra("longitude", position.longitude)
+            startActivity(intent)
+        } else {
+            val intent = Intent(this, ActivityLogin::class.java)
+            startActivity(intent)
         }
+    }
+
+    public fun goBack(v: View) {
+        val intent = Intent(this, ActivityToDeOlho::class.java)
+        startActivity(intent)
     }
 
 
 
-    /**
-     * Verifica e solicita permissoes necessarias para abri o mapa
-     * */
+     // Verifica e solicita permissoes necessarias para abri o mapa
     private fun checkAndRequestPermissions(): Boolean {
 
         val listPermissionsNeeded = ArrayList<String>()
@@ -92,47 +88,42 @@ class ActivityMap : AppCompatActivity() {
         when (requestCode) {
             REQUEST_ID_MULTIPLE_PERMISSIONS -> {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty()) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    setUpMap()
-                } else {
-                    Snackbar.make(map, "Impossivel abrir mapa sem permissão", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show()
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, "Internet não permitida, o aplicativo pode nao funcionar como esperado", Toast.LENGTH_LONG).show()
                 }
-                return
-            }
 
-            // Add other 'when' lines to check for other
-            // permissions this app might request.
-            else -> {
-                // Ignore all other requests.
+                if (grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, "Acesso a armazenamento não permitido" +
+                            ", o aplicativo pode nao funcionar como esperado", Toast.LENGTH_LONG).show()
+                }
+
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, "GPS não permitido, o aplicativo pode nao funcionar como esperado", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
 
     fun setUpMap() {
-
-        /*
-       * Aqui definimos qual vai ser o mapa usado. No caso MAPNIK
-       * */
+       // Aqui definimos qual vai ser o mapa usado. No caso MAPNIK
         map.setTileSource(TileSourceFactory.MAPNIK)
 
-        /*
-        * Aqui sao colocados os botoes de zoom
-        * */
+        // Aqui sao colocados os botoes de zoom
         map.setBuiltInZoomControls(true)
         map.setMultiTouchControls(true)
 
-        /*
-        * Aqui e definido o ponto central do mapa usando o controler
-        * */
+        // Aqui e definido o ponto central do mapa usando o controler
         val mapController = map.controller
         mapController.setZoom(15.5)
         val startPoint = GeoPoint(-15.7801,  -47.9292)
         mapController.setCenter(startPoint)
         map.invalidate()
 
+        carregaDenuncias()
+    }
+
+
+    private fun carregaDenuncias() {
         val queue = Volley.newRequestQueue(this)
         val url = "${Constant().API_URL}denuncias/coords"
 
@@ -140,10 +131,8 @@ class ActivityMap : AppCompatActivity() {
                 Response.Listener<String> { response ->
                     val result = JSONObject(response.toString())
                     val denuncias = result.getJSONArray("denuncia")
-//                    Toast.makeText(context, denuncias.toString(), Toast.LENGTH_LONG).show()
                     for (i in 0..(denuncias.length() - 1)) {
                         val denuncia = denuncias.getJSONObject(i)
-
                         val startMarker = Marker(map)
                         startMarker.position = GeoPoint(denuncia.getDouble("st_x"), denuncia.getDouble("st_y"))
                         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -158,7 +147,6 @@ class ActivityMap : AppCompatActivity() {
                     Toast.makeText(this, "Algo saiu errado, verifique as permissooes e tente novamente!", Toast.LENGTH_SHORT).show()
                 })
 
-        // Add the request to the RequestQueue.
         queue.add(stringRequest)
     }
 }

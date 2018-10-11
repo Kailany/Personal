@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.alonm.todeolho.model.Desordem
 import com.example.alonm.todeolho.utils.Constant
+import com.google.gson.JsonObject
 import com.koushikdutta.async.future.Future
 import com.koushikdutta.ion.Ion
 import kotlinx.android.synthetic.main.activity_add_disorder.*
@@ -38,9 +39,9 @@ class ActivityAddDisorder : AppCompatActivity() {
     var denunciaDesordeTipo = ""
     var dataOcorreu = Calendar.getInstance()
     val IMAGE_SELECTION_CODE = 1
-
     var imageUri: Uri? = null
-    var path: String? = null
+    var path: String? = ""
+    var image: String? = ""
     var fileExtension: String? = null
 
 
@@ -56,23 +57,36 @@ class ActivityAddDisorder : AppCompatActivity() {
         startActivityForResult(photoPickerIntent, IMAGE_SELECTION_CODE)
     }
 
-    fun uploadImage(v: View) {
-        val file = File(path)
-        val url = "${Constant().API_URL}denuncia/upload/imagem"
-        var uploading: Future<com.koushikdutta.ion.Response<String>> = Ion.with(this)
-                .load(url)
-                .setMultipartFile("image", file)
-                .asString()
-                .withResponse()
-                .setCallback { e, result ->
-                    try {
-                        var jobj = JSONObject(result.result);
-                        Toast.makeText(this, jobj.getString("response"), Toast.LENGTH_SHORT).show();
+    fun salvar(v: View) {
+        if (  path!!.isNotEmpty() ) {
+            try {
+                val file: File = File(path)
+                val url = "${Constant().API_URL}denuncia/upload/imagem"
+                Ion.with(this)
+                        .load("POST", url)
+                        .setMultipartParameter("platform", "android")
+                        .setMultipartFile("image", "image/jpeg", file)
+                        .asJsonObject()
+                        .withResponse()
+                        .setCallback { e, result ->
+                            try {
+                                if( result != null ) {
+                                    var jobj = result.result
+                                    image = jobj["filename"].asString
+                                    salvarDenuncia(v)
+                                }
 
-                    } catch (e: JSONException) {
-                        e.printStackTrace();
-                    }
-                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace();
+                            }
+                        }
+            } catch (e: NullPointerException) {
+                salvarDenuncia(v)
+            }
+        } else {
+            salvarDenuncia(v)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -178,6 +192,7 @@ class ActivityAddDisorder : AppCompatActivity() {
     }
 
     fun salvarDenuncia(v: View) {
+        Log.d("alonmota", "passou aqui")
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val user = prefs.getString("user", "")
         val lat = intent.getDoubleExtra("latitude", 0.0)
@@ -204,14 +219,18 @@ class ActivityAddDisorder : AppCompatActivity() {
             body.put("den_local_latitude",lat.toString())
             body.put("den_local_longitude",long.toString())
 
+            if (image!!.isNotEmpty()) {
+                body.put("img_denuncia_id", image)
+            }
+
             val requestBody = body.toString()
-            Log.d("alonmota", requestBody)
+            Log.d("alonmota1", requestBody)
 
             val requestQueue = Volley.newRequestQueue(this)
             val jsonObj = JsonObjectRequest(Request.Method.POST, url, body,
                     Response.Listener<JSONObject> { response ->
-                        Log.d("RESPONSE", response.toString())
-                        if("true" == response.getString("sucesso")) {
+                        Log.d("RESPONSE_request", response.toString())
+                        if(response.getBoolean("sucesso")) {
                             Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, ActivityMap::class.java)
                             startActivity(intent)

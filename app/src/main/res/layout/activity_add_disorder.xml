@@ -106,20 +106,13 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="upload"
-            app:layout_constraintTop_toBottomOf="@id/add_disorder_image_input"
-            android:onClick="uploadImage"
-            android:id="@+id/upload"/>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/add_disorder_button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/salvar"
-            android:onClick="salvarDenuncia"
+            app:layout_constraintTop_toBottomOf="@id/add_disorder_image_input"
+            android:onClick="salvar"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_disorder_image_input"/>
+            android:id="@+id/upload"/>
+
 
 
     </android.support.constraint.ConstraintLayout>

@@ -46,5 +46,10 @@
     <string name="perfil_usuario">Perfil do Usuario</string>
     <string name="data">Data do ocorrido!</string>
     <string name="desordem_tipo">Qual o tipo de desordem?</string>
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
+    <string name="notificacoes">Ativar notificações</string>
+    <string name="avancado">Avançado</string>
+    <string name="idioma">Idioma</string>
 
 </resources>

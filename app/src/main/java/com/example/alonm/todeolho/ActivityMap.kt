@@ -3,9 +3,9 @@ package com.example.alonm.todeolho
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -15,12 +15,17 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.alonm.todeolho.model.Denuncia
 import com.example.alonm.todeolho.utils.Constant
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_map.*
 import org.json.JSONObject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 class ActivityMap : AppCompatActivity() {
     companion object {
@@ -30,10 +35,8 @@ class ActivityMap : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
-
         checkAndRequestPermissions()
         setUpMap()
-
     }
 
     public fun addDenuncia(v: View) {
@@ -125,21 +128,45 @@ class ActivityMap : AppCompatActivity() {
 
     private fun carregaDenuncias() {
         val queue = Volley.newRequestQueue(this)
-        val url = "${Constant().API_URL}denuncias/coords"
+        val urlDen = "${Constant().API_URL}denunciasComImagens"
 
-        val stringRequest = StringRequest(Request.Method.GET, url,
+
+        val stringRequest = StringRequest(Request.Method.GET, urlDen,
                 Response.Listener<String> { response ->
-                    val result = JSONObject(response.toString())
-                    val denuncias = result.getJSONArray("denuncia")
-                    for (i in 0..(denuncias.length() - 1)) {
-                        val denuncia = denuncias.getJSONObject(i)
-                        val startMarker = Marker(map)
-                        startMarker.position = GeoPoint(denuncia.getDouble("st_x"), denuncia.getDouble("st_y"))
-                        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    val denuncias = JsonParser().parse(response).asJsonArray
 
-                        map.overlays.add(startMarker)
+                    //Toast.makeText(context, denuncias.toString(), Toast.LENGTH_LONG).show()
+                    for (i in 0..(denuncias.size() - 1)) {
+                        val denuncia = denuncias[i].asJsonObject
+                        var denunciaTO = Denuncia(
+                                latitude = denuncia["latitude"].asDouble,
+                                longitude = denuncia["longitude"].asDouble,
+                                den_status = denuncia["den_status"].asString,
+                                den_descricao = denuncia["den_descricao"].asString,
+                                den_iddenuncia = denuncia["den_iddenuncia"].asInt,
+                                den_idusuario = denuncia["den_idusuario"].asInt,
+                                den_nivel_confiabilidade = denuncia["den_nivel_confiabilidade"].asInt,
+                                den_anonimato = denuncia["den_anonimato"].asInt,
+                                usu_nome = denuncia["usu_nome"].asString,
+                                des_descricao = denuncia["des_descricao"].asString,
+                                img_idarquivo = nullAsString(denuncia["img_idarquivo"])
+                        )
 
+                        val marker = Marker(map)
+                        marker.position = GeoPoint(denunciaTO.latitude!!, denunciaTO.longitude!!)
+                        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        marker.infoWindow = CustomInfoWindow(map, denunciaTO )
+                        marker.title = denunciaTO.des_descricao
+                        marker.snippet = denunciaTO.den_descricao
+                        marker.subDescription = denunciaTO.den_status
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            marker.image = getDrawable(R.drawable.person)
+                        }
+
+                        map.overlays.add(marker)
                     }
+
+
                     map.invalidate()
 
                 },
@@ -148,5 +175,9 @@ class ActivityMap : AppCompatActivity() {
                 })
 
         queue.add(stringRequest)
+    }
+
+    val nullAsString = { x: JsonElement ->
+        if (x.isJsonNull) "" else x.asString
     }
 }

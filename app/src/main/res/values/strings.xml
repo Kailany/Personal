@@ -51,5 +51,6 @@
     <string name="notificacoes">Ativar notificações</string>
     <string name="avancado">Avançado</string>
     <string name="idioma">Idioma</string>
+    <string name="title_lista_desordens">Desordens já mapeadas perto de você</string>
 
 </resources>

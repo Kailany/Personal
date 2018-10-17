@@ -1,9 +1,15 @@
 package com.example.alonm.todeolho.model
 
 class Denuncia (
-        var descricao: String,
-        var anonima: Int?,
-        var desordem: String?,
-        var status: String?,
-        var local: String
+        var latitude: Double?,
+        var longitude: Double?,
+        var den_status: String?,
+        var den_descricao: String?,
+        var den_iddenuncia: Int?,
+        var den_idusuario: Int?,
+        var den_nivel_confiabilidade: Int?,
+        var den_anonimato: Int?,
+        var usu_nome: String?,
+        var des_descricao: String?,
+        var img_idarquivo: String?
 )

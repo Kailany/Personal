@@ -22,8 +22,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.alonm.todeolho.model.Desordem
 import com.example.alonm.todeolho.utils.Constant
-import com.google.gson.JsonObject
-import com.koushikdutta.async.future.Future
 import com.koushikdutta.ion.Ion
 import kotlinx.android.synthetic.main.activity_add_disorder.*
 import org.json.JSONException

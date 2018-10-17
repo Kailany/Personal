@@ -16,7 +16,12 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.alonm.todeolho.model.Denuncia
 import com.example.alonm.todeolho.utils.Constant
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.koushikdutta.ion.Ion
 import kotlinx.android.synthetic.main.fragment_lista_desordens.*
+import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -43,22 +48,29 @@ class FragmentListaDenuncias : Fragment() {
     fun recuperaListaDesordens(view: View) {
         var arrayDisordem: ArrayList<Denuncia> = ArrayList()
         val queue = Volley.newRequestQueue(view.context)
-        val url = "${Constant().API_URL}denuncias"
+        val url = "${Constant().API_URL}denunciasComImagens"
+
 
         val stringRequest = StringRequest(Request.Method.GET, url,
                 Response.Listener<String> { response ->
-                    val result = JSONObject(response.toString())
-                    Log.d("Alon", result.toString())
-                    val denuncias = result.getJSONArray("denuncias")
+                    Log.d("alon-mota", response.toString())
+                    val denuncias = JsonParser().parse(response).asJsonArray
+
                     //Toast.makeText(context, denuncias.toString(), Toast.LENGTH_LONG).show()
-                    for (i in 0..(denuncias.length() - 1)) {
-                        val denuncia = denuncias.getJSONObject(i)
+                    for (i in 0..(denuncias.size() - 1)) {
+                        val denuncia = denuncias[i].asJsonObject
                         var denunciaTO = Denuncia(
-                                descricao = denuncia.getString("den_descricao")?: "nao consta",
-                                anonima = denuncia.getInt("den_anonimato")?: 1,
-                                status = denuncia.getString("den_status")?: "nao consta",
-                                desordem = "Prédio, casa ou galpão abandonado",
-                                local = "local"
+                                latitude = denuncia["latitude"].asDouble,
+                                longitude = denuncia["longitude"].asDouble,
+                                den_status = denuncia["den_status"].asString,
+                                den_descricao = denuncia["den_descricao"].asString,
+                                den_iddenuncia = denuncia["den_iddenuncia"].asInt,
+                                den_idusuario = denuncia["den_idusuario"].asInt,
+                                den_nivel_confiabilidade = denuncia["den_nivel_confiabilidade"].asInt,
+                                den_anonimato = denuncia["den_anonimato"].asInt,
+                                usu_nome = denuncia["usu_nome"].asString,
+                                des_descricao = denuncia["des_descricao"].asString,
+                                img_idarquivo = nullAsString(denuncia["img_idarquivo"])
                         )
                         arrayDisordem.add(denunciaTO)
 
@@ -74,5 +86,8 @@ class FragmentListaDenuncias : Fragment() {
     }
 
 
+    val nullAsString = { x: JsonElement ->
+        if (x.isJsonNull) "" else x.asString
+    }
 
 }

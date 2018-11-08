@@ -46,6 +46,12 @@ class ActivityLogin : AppCompatActivity(), LoaderCallbacks<Cursor> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        login_cadastrar.setOnClickListener {
+            val intent = Intent(it.context, ActivityCadastroPessoa::class.java)
+            it.context.startActivity(intent)
+            finish()
+        }
         // Set up the login form.
         populateAutoComplete()
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->

@@ -11,6 +11,10 @@ import com.example.alonm.todeolho.model.Denuncia
 import com.example.alonm.todeolho.utils.Constant
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_disorder.view.*
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+
+
 
 class AdapterListaDenuncias(
         private val desordens: List<Denuncia>,
@@ -18,11 +22,30 @@ class AdapterListaDenuncias(
 ): RecyclerView.Adapter<AdapterListaDenuncias.Holder>() {
 
     //Holder para cada item
-    class Holder(item: View): RecyclerView.ViewHolder(item) {
+    inner class Holder(item: View): RecyclerView.ViewHolder(item) {
         val desordem = item.rv_disorder_desordem
         val descricao = item.rv_disorder_descricao
         val imagem = item.rv_disorder_image
+        val btnLike = item.rv_disorder_validar
+        val btnDslike = item.rv_disorder_invalidar
 
+        init {
+            item.setOnClickListener {
+                var pos = adapterPosition
+                if (pos !== RecyclerView.NO_POSITION) {
+                    val clickedItem = desordens[pos]
+                    val intent = Intent(it.context, ActivityDetalheDenuncia::class.java)
+                    intent.putExtra("denuncia", clickedItem)
+                    this@AdapterListaDenuncias.context.startActivity(intent)
+                }
+            }
+            btnLike.setOnClickListener {
+                this@AdapterListaDenuncias.likeDenuncia()
+            }
+            btnDslike.setOnClickListener{
+                this@AdapterListaDenuncias.dslikeDenuncia()
+            }
+        }
 //        val status = item.rv_disorder_status
 //        val local = item.rv_disorder_local
 
@@ -44,7 +67,6 @@ class AdapterListaDenuncias(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_disorder, parent, false)
-        view.setOnClickListener { detailItem(view) }
         return Holder(view)
     }
 
@@ -57,8 +79,12 @@ class AdapterListaDenuncias(
         holder.setValues(desordem)
     }
 
-    private fun detailItem(v: View) {
-        val intent = Intent(v.context, ActivityDetalheDenuncia::class.java)
-        context.startActivity(intent)
+    fun likeDenuncia( ) {
+
     }
+
+    fun dslikeDenuncia( ) {
+
+    }
+
 }

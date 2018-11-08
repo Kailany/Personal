@@ -3,12 +3,16 @@ package com.example.alonm.todeolho
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.android.volley.Request
@@ -28,6 +32,8 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 class ActivityMap : AppCompatActivity() {
+
+    private var locationManager : LocationManager? = null
     companion object {
         val REQUEST_ID_MULTIPLE_PERMISSIONS = 3
     }
@@ -36,7 +42,26 @@ class ActivityMap : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         checkAndRequestPermissions()
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+        try {
+            // Request location updates
+            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener);
+        } catch(ex: SecurityException) {
+            Toast.makeText(application, "Não foi possivel centralizar o mapa na sua posição. Verifique seu gps", Toast.LENGTH_LONG)
+        }
         setUpMap()
+    }
+
+    //define the listener
+    private val locationListener: LocationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            val startPoint = GeoPoint(location.latitude,  location.longitude)
+            val mapController = map.controller
+            mapController.setCenter(startPoint)
+        }
+        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
     }
 
     public fun addDenuncia(v: View) {
@@ -55,8 +80,7 @@ class ActivityMap : AppCompatActivity() {
     }
 
     public fun goBack(v: View) {
-        val intent = Intent(this, ActivityToDeOlho::class.java)
-        startActivity(intent)
+        finish()
     }
 
 
@@ -117,6 +141,7 @@ class ActivityMap : AppCompatActivity() {
 
         // Aqui e definido o ponto central do mapa usando o controler
         val mapController = map.controller
+
         mapController.setZoom(15.5)
         val startPoint = GeoPoint(-15.7801,  -47.9292)
         mapController.setCenter(startPoint)

@@ -41,6 +41,7 @@ class ActivityAddDisorder : AppCompatActivity() {
     var path: String? = ""
     var image: String? = ""
     var fileExtension: String? = null
+    var requestSave = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,61 +191,63 @@ class ActivityAddDisorder : AppCompatActivity() {
     }
 
     fun salvarDenuncia(v: View) {
-        Log.d("alonmota", "passou aqui")
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val user = prefs.getString("user", "")
-        val lat = intent.getDoubleExtra("latitude", 0.0)
-        val long = intent.getDoubleExtra("longitude", 0.0)
-        val currentTime = Calendar.getInstance().time
+        if (!requestSave){
+            requestSave = true
+            upload.isEnabled = false
+            Log.d("alonmota", "passou aqui")
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            val user = prefs.getString("user", "")
+            val lat = intent.getDoubleExtra("latitude", 0.0)
+            val long = intent.getDoubleExtra("longitude", 0.0)
+            val currentTime = Calendar.getInstance().time
 
-        try {
-            val queue = Volley.newRequestQueue(this)
-            val url = "${Constant().API_URL}denuncia/inserir"
-            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-            val tz = TimeZone.getTimeZone("UTC")
-            df.timeZone = tz;
+            try {
+                val queue = Volley.newRequestQueue(this)
+                val url = "${Constant().API_URL}denuncia/inserir"
+                val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+                val tz = TimeZone.getTimeZone("UTC")
+                df.timeZone = tz;
 
-            val body = JSONObject()
-            body.put("usuario", user)
-            body.put("den_status", "Com Problemas")
-            body.put("den_descricao", add_disorder_descricao.text.toString())
-            body.put("den_anonimato", add_disorder_anonima.isChecked.toInt())
-            body.put("desordem",denunciaDesordeTipo)
-            body.put("den_datahora_registro", df.format(Date()))
-            body.put("den_datahora_ocorreu",df.format(dataOcorreu.time))
-            Log.d("alonmota", df.format(dataOcorreu.time))
-            body.put("den_nivel_confiabilidade",3)
-            body.put("den_local_latitude",lat.toString())
-            body.put("den_local_longitude",long.toString())
+                val body = JSONObject()
+                body.put("usuario", user)
+                body.put("den_status", "Com Problemas")
+                body.put("den_descricao", add_disorder_descricao.text.toString())
+                body.put("den_anonimato", add_disorder_anonima.isChecked.toInt())
+                body.put("desordem",denunciaDesordeTipo)
+                body.put("den_datahora_registro", df.format(Date()))
+                body.put("den_datahora_ocorreu",df.format(dataOcorreu.time))
+                Log.d("alonmota", df.format(dataOcorreu.time))
+                body.put("den_nivel_confiabilidade",3)
+                body.put("den_local_latitude",lat.toString())
+                body.put("den_local_longitude",long.toString())
 
-            if (image!!.isNotEmpty()) {
-                body.put("img_denuncia_id", image)
-            }
+                if (image!!.isNotEmpty()) {
+                    body.put("img_denuncia_id", image)
+                }
 
-            val requestBody = body.toString()
-            Log.d("alonmota1", requestBody)
+                val requestBody = body.toString()
+                Log.d("alonmota1", requestBody)
 
-            val requestQueue = Volley.newRequestQueue(this)
-            val jsonObj = JsonObjectRequest(Request.Method.POST, url, body,
-                    Response.Listener<JSONObject> { response ->
-                        Log.d("RESPONSE_request", response.toString())
-                        if(response.getBoolean("sucesso")) {
-                            Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, ActivityMap::class.java)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(this, "Desculpe, ocorreu um erro!", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, ActivityMap::class.java)
-                            startActivity(intent)
+                val requestQueue = Volley.newRequestQueue(this)
+                val jsonObj = JsonObjectRequest(Request.Method.POST, url, body,
+                        Response.Listener<JSONObject> { response ->
+                            Log.d("RESPONSE_request", response.toString())
+                            if(response.getBoolean("sucesso")) {
+                                Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
+                                finish()
+                            } else {
+                                Toast.makeText(this, "Desculpe, ocorreu um erro!", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                        },
+                        Response.ErrorListener { error ->
+                            Log.d("RESPONSE", error.toString())
                         }
-                    },
-                    Response.ErrorListener { error ->
-                        Log.d("RESPONSE", error.toString())
-                    }
-            )
-            requestQueue.add(jsonObj)
-        } catch (e: JSONException) {
-            e.printStackTrace()
+                )
+                requestQueue.add(jsonObj)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
         }
     }
 

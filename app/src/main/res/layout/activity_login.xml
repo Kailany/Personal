@@ -73,6 +73,15 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/login_cadastrar"
+                android:text="@string/cadastre"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                android:textColor="#0000ff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

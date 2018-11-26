@@ -39,20 +39,35 @@
             android:hint="@string/log"
             app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_nome"/>
 
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/cadastro_pessoa_email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/input_border"
+            android:layout_marginVertical="10dp"
+            android:hint="@string/prompt_email"
+            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_login"/>
+
+
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/cadastro_pessoa_senha"
             android:layout_width="match_parent"
             android:layout_marginVertical="10dp"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
             android:layout_height="50dp"
             android:background="@drawable/input_border"
             android:hint="@string/senha"
-            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_login"/>
+            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_email"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/cadastro_pessoa_confirma"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_border"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
             android:layout_marginVertical="10dp"
             android:hint="@string/confirm"
             app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_senha"/>
@@ -81,22 +96,13 @@
             tools:layout_editor_absoluteX="30dp" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/cadastro_pessoa_email"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/input_border"
-            android:layout_marginVertical="10dp"
-            android:hint="@string/prompt_email"
-            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_nascimento"/>
-
-        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/cadastro_pessoa_telefone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_border"
             android:layout_marginVertical="10dp"
             android:hint="@string/telefone"
-            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_email" />
+            app:layout_constraintTop_toBottomOf="@id/cadastro_pessoa_cpf" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/cadastro_pessoa_foto_label"

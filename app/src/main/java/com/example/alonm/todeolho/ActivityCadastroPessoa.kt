@@ -10,6 +10,7 @@ import android.preference.PreferenceManager.*
 import android.provider.MediaStore
 import android.support.v4.content.CursorLoader
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -28,6 +29,7 @@ import java.io.FileNotFoundException
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
 class ActivityCadastroPessoa : AppCompatActivity() {
 
@@ -103,33 +105,58 @@ class ActivityCadastroPessoa : AppCompatActivity() {
     fun salvarP(v: View) {
 
         Log.d("request_alon", "ta passando pra salvar1")
-/*
+
         // Reset errors.
-        email.error = null
-        password.error = null
+        cadastro_pessoa_nome.error = null
+        cadastro_pessoa_email.error = null
+        cadastro_pessoa_login.error = null
+
+        cadastro_pessoa_senha.error = null
+        cadastro_pessoa_confirma.error = null
+
 
         // Store values at the time of the login attempt.
-        val emailStr = email.text.toString()
-        val passwordStr = password.text.toString()
+        val nome = cadastro_pessoa_nome.text.toString()
+        val email = cadastro_pessoa_email.text.toString()
+        val login = cadastro_pessoa_login.text.toString()
+
+        val senha= cadastro_pessoa_senha.text.toString()
+        val confirma = cadastro_pessoa_confirma.text.toString()
 
         var cancel = false
         var focusView: View? = null
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(passwordStr) && !isPasswordValid(passwordStr)) {
-            password.error = getString(R.string.error_invalid_password)
-            focusView = password
+        if (!TextUtils.isEmpty(senha) && !isPasswordValid(senha)) {
+            cadastro_pessoa_senha.error = getString(R.string.error_invalid_password)
+            focusView = cadastro_pessoa_senha
             cancel = true
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(emailStr)) {
-            email.error = getString(R.string.error_field_required)
-            focusView = email
+        // Check if passwords matches
+        if (!TextUtils.isEmpty(confirma) && !isPasswordValid(confirma) && !senha.equals(confirma)) {
+            cadastro_pessoa_senha.error = getString(R.string.senha_diferente)
+            cadastro_pessoa_confirma.error = getString(R.string.senha_diferente)
+            focusView = cadastro_pessoa_senha
             cancel = true
-        } else if (!isEmailValid(emailStr)) {
-            email.error = getString(R.string.error_invalid_email)
-            focusView = email
+        }
+
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            cadastro_pessoa_email.error = getString(R.string.error_field_required)
+            focusView = cadastro_pessoa_email
+            cancel = true
+        } else if (!isEmailValid(email)) {
+            cadastro_pessoa_email.error = getString(R.string.error_invalid_email)
+            focusView = cadastro_pessoa_email
+            cancel = true
+        }
+
+        // Check for a valid login
+        if (!TextUtils.isEmpty(login) && !isLoginValid(login)) {
+            cadastro_pessoa_login.error = getString(R.string.login_curto)
+            focusView = cadastro_pessoa_login
             cancel = true
         }
 
@@ -142,39 +169,49 @@ class ActivityCadastroPessoa : AppCompatActivity() {
             val queue = Volley.newRequestQueue(this)
             val url = "${Constant().API_URL}usuarios"
 
+            if (  path!!.isNotEmpty() ) {
+                try {
+                    val file: File = File(path)
+                    val url = "${Constant().API_URL}usuario/upload/imagem"
+                    Ion.with(this)
+                            .load("POST", url)
+                            .setMultipartParameter("platform", "android")
+                            .setMultipartFile("image", "image/jpeg", file)
+                            .asJsonObject()
+                            .withResponse()
+                            .setCallback { e, result ->
+                                try {
+                                    if( result != null ) {
+                                        var jobj = result.result
+                                        image = jobj["filename"].asString
+                                        salvarPessoa(v)
+                                    }
 
-        }
-*/
-        if (  path!!.isNotEmpty() ) {
-            try {
-                val file: File = File(path)
-                val url = "${Constant().API_URL}usuario/upload/imagem"
-                Ion.with(this)
-                        .load("POST", url)
-                        .setMultipartParameter("platform", "android")
-                        .setMultipartFile("image", "image/jpeg", file)
-                        .asJsonObject()
-                        .withResponse()
-                        .setCallback { e, result ->
-                            try {
-                                if( result != null ) {
-                                    var jobj = result.result
-                                    image = jobj["filename"].asString
-                                    salvarPessoa(v)
+                                } catch (e: JSONException) {
+                                    e.printStackTrace();
                                 }
-
-                            } catch (e: JSONException) {
-                                e.printStackTrace();
                             }
-                        }
-            } catch (e: NullPointerException) {
+                } catch (e: NullPointerException) {
+                    salvarPessoa(v)
+                }
+            } else {
                 salvarPessoa(v)
             }
-        } else {
-            salvarPessoa(v)
         }
 
     }
+
+    private fun isPasswordValid(password: String): Boolean {
+        return password.length > 4
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return email.contains("@")
+    }
+    private fun isLoginValid(login: String): Boolean {
+        return login.length >= 4
+    }
+
 
     fun salvarPessoa(v: View) {
         if (!requestSave){

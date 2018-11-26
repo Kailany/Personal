@@ -52,6 +52,11 @@ class ActivityMap : AppCompatActivity() {
         setUpMap()
     }
 
+    override fun onResume() {
+        super.onResume()
+        map.invalidate()
+    }
+
     //define the listener
     private val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -72,6 +77,7 @@ class ActivityMap : AppCompatActivity() {
             val position = map.mapCenter as GeoPoint
             intent.putExtra("latitude", position.latitude)
             intent.putExtra("longitude", position.longitude)
+            map.invalidate()
             startActivity(intent)
         } else {
             val intent = Intent(this, ActivityLogin::class.java)

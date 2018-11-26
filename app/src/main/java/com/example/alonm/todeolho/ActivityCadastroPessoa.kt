@@ -44,8 +44,6 @@ class ActivityCadastroPessoa : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro_pessoa)
-
-
     }
 
     fun showDatePickerDialogPessoa(v: View) {
@@ -102,8 +100,51 @@ class ActivityCadastroPessoa : AppCompatActivity() {
     }
 
 
-    fun salvarP(v: View) {        Log.d("request_alon", "ta passando pra salvar1")
+    fun salvarP(v: View) {
 
+        Log.d("request_alon", "ta passando pra salvar1")
+/*
+        // Reset errors.
+        email.error = null
+        password.error = null
+
+        // Store values at the time of the login attempt.
+        val emailStr = email.text.toString()
+        val passwordStr = password.text.toString()
+
+        var cancel = false
+        var focusView: View? = null
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(passwordStr) && !isPasswordValid(passwordStr)) {
+            password.error = getString(R.string.error_invalid_password)
+            focusView = password
+            cancel = true
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(emailStr)) {
+            email.error = getString(R.string.error_field_required)
+            focusView = email
+            cancel = true
+        } else if (!isEmailValid(emailStr)) {
+            email.error = getString(R.string.error_invalid_email)
+            focusView = email
+            cancel = true
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView?.requestFocus()
+        } else {
+
+            val queue = Volley.newRequestQueue(this)
+            val url = "${Constant().API_URL}usuarios"
+
+
+        }
+*/
         if (  path!!.isNotEmpty() ) {
             try {
                 val file: File = File(path)

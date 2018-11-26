@@ -37,17 +37,30 @@ class ActivityAddDisorder : AppCompatActivity() {
     var denunciaDesordeTipo = ""
     var dataOcorreu = Calendar.getInstance()
     val IMAGE_SELECTION_CODE = 1
+    val LOCATION_SELECTION_CODE = 2
     var imageUri: Uri? = null
     var path: String? = ""
     var image: String? = ""
     var fileExtension: String? = null
     var requestSave = false
 
+    var lat = 0.0
+    var long = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_disorder)
+        lat = intent.getDoubleExtra("latitude", 0.0)
+        long = intent.getDoubleExtra("longitude", 0.0)
         carregaTiposDesordem()
+    }
+
+    fun selecionarLocal(v: View) {
+        val intent = Intent(this, ActivityLocationSelect::class.java)
+        intent.putExtra("lat", lat)
+        intent.putExtra("lon", long)
+        startActivityForResult(intent, LOCATION_SELECTION_CODE)
     }
 
     fun choseImageToUpload(v: View) {
@@ -107,6 +120,11 @@ class ActivityAddDisorder : AppCompatActivity() {
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 }
+            }
+
+            LOCATION_SELECTION_CODE -> if (resultCode == Activity.RESULT_OK) {
+                lat = data.getDoubleExtra("lat", 0.0)
+                long = data.getDoubleExtra("lon", 0.0)
             }
         }
     }
@@ -197,8 +215,6 @@ class ActivityAddDisorder : AppCompatActivity() {
             Log.d("alonmota", "passou aqui")
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val user = prefs.getString("user", "")
-            val lat = intent.getDoubleExtra("latitude", 0.0)
-            val long = intent.getDoubleExtra("longitude", 0.0)
             val currentTime = Calendar.getInstance().time
 
             try {
@@ -245,6 +261,7 @@ class ActivityAddDisorder : AppCompatActivity() {
                         }
                 )
                 requestQueue.add(jsonObj)
+
             } catch (e: JSONException) {
                 e.printStackTrace()
             }

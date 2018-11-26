@@ -30,7 +30,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="nav_map">Mapa das desordens</string>
-    <string name="nav_list">Perto de mim</string>
+    <string name="nav_list">Desordens Cadastradas</string>
     <string name="nav_forum">Fórum de dúvidas</string>
     <string name="nav_info">Informações gerais</string>
     <string name="nav_profile">Perfil</string>
@@ -40,10 +40,10 @@
     <string name="descricao">Descrição</string>
     <string name="imagem">Imagem</string>
     <string name="salvar">Salvar</string>
-    <string name="cadastro_denuncia">Cadastre uma denúncia!</string>
+    <string name="cadastro_denuncia">Informe uma desordem!</string>
     <string name="label_denuncia_anonima">Denúncia anonima!</string>
     <string name="hora_ocorrido">Hora do Ocorrido!</string>
-    <string name="perfil_usuario">Perfil do Usuario</string>
+    <string name="perfil_usuario">Anônimo</string>
     <string name="data">Data do ocorrido!</string>
     <string name="desordem_tipo">Qual o tipo de desordem?</string>
     <string name="sim">Sim</string>
@@ -62,5 +62,10 @@
     <string name="cadastro_texto">Para se cadastrar favor informe os dados</string>
     <string name="foto">Foto</string>
     <string name="cadastre">cadastre-se</string>
+    <string name="sair">Sair</string>
+    <string name="intro_text">Ajude a sua cidade a prosperar! \n Seja um informante consciente!</string>
+    <string name="local">Local</string>
+    <string name="local_sel">Selecionar Local</string>
+    <string name="log">login</string>
 
 </resources>

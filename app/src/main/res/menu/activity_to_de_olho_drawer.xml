@@ -14,30 +14,17 @@
             android:icon="@drawable/ic_pin_drop_black_24dp"
             android:title="@string/nav_list" />
 
-        <item
-            android:id="@+id/nav_forum"
-            android:icon="@drawable/ic_mode_comment_black_24dp"
-            android:title="@string/nav_forum" />
-
-        <item
-            android:id="@+id/nav_info"
-            android:icon="@drawable/ic_info_outline_black_24dp"
-            android:title="@string/nav_info" />
 
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="@string/nav_profile" />
 
-        <item
-            android:id="@+id/nav_config"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/nav_config" />
 
         <item
-            android:id="@+id/nav_login"
+            android:id="@+id/nav_sair"
             android:icon="@drawable/ic_input_black_24dp"
-            android:title="@string/login" />
+            android:title="@string/sair" />
 
     </group>
 

@@ -9,7 +9,8 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:padding="20dp"
+        >
 
 
         <android.support.v7.widget.AppCompatImageView
@@ -20,37 +21,66 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/ic_person_black_24dp"
             />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/perfil_nome"
+            android:id="@+id/perfil_nome_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/perfil_foto"
-            android:text="Nome"/>
+            android:layout_margin="10dp"
+            android:text="Nome:"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/perfil_nome"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/perfil_nome_label"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/perfil_email_label"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/perfil_nome"
+            android:text="Email"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_margin="10dp"
             android:id="@+id/perfil_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
-            app:layout_constraintTop_toBottomOf="@id/perfil_nome"/>
+            app:layout_constraintTop_toBottomOf="@id/perfil_email_label"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/perfil_telefone_label"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/perfil_email"
+            android:text="Telefone"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_margin="10dp"
             android:id="@+id/perfil_telefone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Telefone"
-            app:layout_constraintTop_toBottomOf="@id/perfil_email"/>
+            app:layout_constraintTop_toBottomOf="@id/perfil_telefone_label"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/perfil_confiabilidade_label"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/perfil_telefone"
+            android:text="Confiabilidade"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_margin="10dp"
             android:id="@+id/perfil_confiabilidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Confiabilidade"
-            app:layout_constraintTop_toBottomOf="@id/perfil_telefone"/>
+            app:layout_constraintTop_toBottomOf="@id/perfil_confiabilidade_label"/>
 
     </android.support.constraint.ConstraintLayout>
 

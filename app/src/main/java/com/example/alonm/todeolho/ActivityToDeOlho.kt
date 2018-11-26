@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -11,6 +12,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatTextView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -18,17 +20,21 @@ import com.example.alonm.todeolho.*
 import kotlinx.android.synthetic.main.activity_to_de_olho.*
 import kotlinx.android.synthetic.main.app_bar_to_de_olho.*
 import kotlinx.android.synthetic.main.content_to_de_olho.*
+import kotlinx.android.synthetic.main.nav_header_to_de_olho.*
 
 
 class ActivityToDeOlho : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val PERMISSION_INTERNET = 123
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_de_olho)
         //setSupportActionBar(toolbar)
         requestPermissions()
         setUpViewPager(container)
+
+
 
         //define acao de acionar o menu
         val toggle = ActionBarDrawerToggle(
@@ -37,6 +43,8 @@ class ActivityToDeOlho : AppCompatActivity(), NavigationView.OnNavigationItemSel
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+        var page = intent.getIntExtra("page", 0);
+        setFragment(page);
 
 
     }
@@ -60,10 +68,10 @@ class ActivityToDeOlho : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private fun setUpViewPager(viewPager: ViewPager) {
         val adapter = AdapterPage(supportFragmentManager)
         adapter.addFragment(FragmentListaDenuncias(), "DisorderList")
-        adapter.addFragment(FragmentForum(), "Forum")
-        adapter.addFragment(FragmentInformacoes(), "Info")
+//        adapter.addFragment(FragmentForum(), "Forum")
+//        adapter.addFragment(FragmentInformacoes(), "Info")
         adapter.addFragment(FragmentPerfil(), "Profile")
-        adapter.addFragment(FragmentConfiguracoes(), "Config")
+//        adapter.addFragment(FragmentConfiguracoes(), "Config")
         viewPager.adapter = adapter
     }
 
@@ -82,6 +90,7 @@ class ActivityToDeOlho : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.to_de_olho, menu)
+        supportActionBar?.hide()
         return true
     }
 
@@ -105,22 +114,18 @@ class ActivityToDeOlho : AppCompatActivity(), NavigationView.OnNavigationItemSel
             R.id.nav_list -> {
                 container.currentItem = 0
             }
-            R.id.nav_forum -> {
+
+            R.id.nav_profile -> {
                 container.currentItem = 1
             }
-            R.id.nav_info -> {
-                container.currentItem = 2
-            }
-            R.id.nav_profile -> {
-                container.currentItem = 3
-            }
-            R.id.nav_config -> {
-                container.currentItem = 4
-            }
-            R.id.nav_login -> {
-                // start login activity
-                val intent = Intent(this, ActivityLogin::class.java)
-                startActivity(intent)
+
+            R.id.nav_sair -> {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+                val editor = prefs.edit()
+                editor.remove("user")
+                editor.remove("user_id")
+                editor.apply()
+                finish()
             }
         }
 

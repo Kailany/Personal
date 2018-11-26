@@ -23,8 +23,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="10dp"
         android:onClick="goBack"
-        android:src="@drawable/ic_arrow_back_black_24dp"
-        android:backgroundTint="#00cfcf"/>
+        android:src="@drawable/ic_arrow_back_white_24dp"
+        android:backgroundTint="@color/purpleDark"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/map_disorder_add"
@@ -33,9 +33,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="10dp"
-        android:src="@drawable/ic_add_black_24dp"
+        android:src="@drawable/ic_add_white_24dp"
         android:onClick="addDenuncia"
-        android:backgroundTint="#00cfcf"/>
+        android:backgroundTint="@color/purpleDark"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="wrap_content"

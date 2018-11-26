@@ -67,5 +67,6 @@
     <string name="local">Local</string>
     <string name="local_sel">Selecionar Local</string>
     <string name="log">login</string>
+    <string name="login_text">Entre ou cadastre-se para fazer uma denúncia</string>
 
 </resources>

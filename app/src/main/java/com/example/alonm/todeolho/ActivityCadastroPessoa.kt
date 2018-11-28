@@ -58,6 +58,7 @@ class ActivityCadastroPessoa : AppCompatActivity() {
         val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
             nascimento.set(year, month, day)
             Log.d("alonmota", "$year , $monthOfYear , $day")
+            cadastro_pessoa_nascimento_info.text = "$day/$month/$year"
         }, year, month, day)
         dpd.show()
     }
@@ -192,7 +193,7 @@ class ActivityCadastroPessoa : AppCompatActivity() {
                                 }
                             }
                 } catch (e: NullPointerException) {
-                    salvarPessoa(v)
+                    Log.d("olho_request", e.localizedMessage)
                 }
             } else {
                 salvarPessoa(v)
@@ -221,7 +222,6 @@ class ActivityCadastroPessoa : AppCompatActivity() {
             val currentTime = Calendar.getInstance().time
 
             try {
-                val queue = Volley.newRequestQueue(this)
                 val url = "${Constant().API_URL}usuarios"
                 val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
                 val tz = TimeZone.getTimeZone("UTC")
@@ -255,6 +255,8 @@ class ActivityCadastroPessoa : AppCompatActivity() {
                             }
                         },
                         Response.ErrorListener { error ->
+                            cadastro_pessoa_salvar.isEnabled = true
+                            Toast.makeText(this, "Ocorreu um erro, tente novamente!", Toast.LENGTH_SHORT).show()
                             Log.d("RESPONSE", error.toString())
                         }
                 )

@@ -138,7 +138,7 @@ class ActivityLogin : AppCompatActivity(), LoaderCallbacks<Cursor> {
                                 editor.putString("user", user.getString("usu_email"))
                                 editor.putString("user_id", user.getString("usu_idusuario"))
                                 editor.apply()
-                                val intent = Intent(this, ActivityToDeOlho::class.java)
+                                val intent = Intent(this, ActivityHome::class.java)
                                 startActivity(intent)
                                 Toast.makeText(this, "Bem vindo!", Toast.LENGTH_LONG).show()
                             }

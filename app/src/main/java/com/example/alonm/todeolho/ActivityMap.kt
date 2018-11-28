@@ -3,6 +3,9 @@ package com.example.alonm.todeolho
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -12,7 +15,6 @@ import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.android.volley.Request
@@ -23,13 +25,13 @@ import com.example.alonm.todeolho.model.Denuncia
 import com.example.alonm.todeolho.utils.Constant
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_map.*
-import org.json.JSONObject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
 class ActivityMap : AppCompatActivity() {
 
@@ -156,6 +158,20 @@ class ActivityMap : AppCompatActivity() {
         carregaDenuncias()
     }
 
+    fun getBitmapFromURL(src: String): Bitmap? {
+        try {
+            val url = URL(src)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input = connection.inputStream
+            return BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            // Log exception
+            return null
+        }
+
+    }
 
     private fun carregaDenuncias() {
         val queue = Volley.newRequestQueue(this)
@@ -180,19 +196,22 @@ class ActivityMap : AppCompatActivity() {
                                 den_anonimato = denuncia["den_anonimato"].asInt,
                                 usu_nome = denuncia["usu_nome"].asString,
                                 des_descricao = denuncia["des_descricao"].asString,
-                                img_idarquivo = nullAsString(denuncia["img_idarquivo"])
+                                img_idarquivo = nullAsString(denuncia["img_idarquivo"]),
+                                confirmacao = -1
                         )
 
                         val marker = Marker(map)
                         marker.position = GeoPoint(denunciaTO.latitude!!, denunciaTO.longitude!!)
                         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                        marker.infoWindow = CustomInfoWindow(map, denunciaTO )
+                        marker.infoWindow = CustomInfoWindow(map, denunciaTO)
                         marker.title = denunciaTO.des_descricao
                         marker.snippet = denunciaTO.den_descricao
+                        marker.image = BitmapDrawable(resources, getBitmapFromURL(denunciaTO.img_idarquivo.toString()))
                         marker.subDescription = denunciaTO.den_status
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             marker.image = getDrawable(R.drawable.person)
                         }
+
 
                         map.overlays.add(marker)
                     }

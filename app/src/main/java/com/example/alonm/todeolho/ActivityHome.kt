@@ -39,8 +39,16 @@ class ActivityHome : AppCompatActivity() {
     }
 
     fun visualisarPerfil(c: View) {
-        val intent = Intent(this, ActivityToDeOlho::class.java)
-        intent.putExtra("page", 1)
-        startActivity(intent)
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val user = prefs.getString("user", "")
+        if (user != null && !user.isEmpty() && !"-".equals(user)) {
+            val intent = Intent(this, ActivityToDeOlho::class.java)
+            intent.putExtra("page", 1)
+            startActivity(intent)
+        } else {
+            val intent = Intent(this, ActivityLogin::class.java)
+            startActivity(intent)
+        }
     }
 }

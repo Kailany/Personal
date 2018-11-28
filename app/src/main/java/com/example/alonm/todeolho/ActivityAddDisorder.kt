@@ -53,6 +53,9 @@ class ActivityAddDisorder : AppCompatActivity() {
         setContentView(R.layout.activity_add_disorder)
         lat = intent.getDoubleExtra("latitude", 0.0)
         long = intent.getDoubleExtra("longitude", 0.0)
+        if(lat != 0.0) {
+            add_disorder_local_info.text = "Latitude=$lat\nLongitude=$long"
+        }
         carregaTiposDesordem()
     }
 
@@ -125,6 +128,7 @@ class ActivityAddDisorder : AppCompatActivity() {
             LOCATION_SELECTION_CODE -> if (resultCode == Activity.RESULT_OK) {
                 lat = data.getDoubleExtra("lat", 0.0)
                 long = data.getDoubleExtra("lon", 0.0)
+                add_disorder_local_info.text = "Latitude=$lat\nLongitude=$long"
             }
         }
     }
@@ -148,6 +152,7 @@ class ActivityAddDisorder : AppCompatActivity() {
             dataOcorreu.set(Calendar.HOUR, hour)
             dataOcorreu.set(Calendar.MINUTE, minute)
             Log.d("alonmota", "${dataOcorreu}")
+            add_disorder_time_info.text = "Hora = $hour:$minute"
         }, hour,minute, true)
         dpd.show()
     }
@@ -162,6 +167,7 @@ class ActivityAddDisorder : AppCompatActivity() {
         val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
             dataOcorreu.set(year, month, day)
             Log.d("alonmota", "$year , $monthOfYear , $day")
+            add_disorder_date_info.text = "Data = $day/$month/$year"
         }, year, month, day)
         dpd.show()
     }

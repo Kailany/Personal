@@ -2,6 +2,7 @@ package com.example.alonm.todeolho
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +13,21 @@ import com.example.alonm.todeolho.utils.Constant
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_disorder.view.*
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.JsonParser
+import org.json.JSONException
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 
 
@@ -30,6 +45,8 @@ class AdapterListaDenuncias(
         val btnDslike = item.rv_disorder_invalidar
 
         init {
+
+
             item.setOnClickListener {
                 var pos = adapterPosition
                 if (pos !== RecyclerView.NO_POSITION) {
@@ -40,10 +57,18 @@ class AdapterListaDenuncias(
                 }
             }
             btnLike.setOnClickListener {
-                this@AdapterListaDenuncias.likeDenuncia()
+                var pos = adapterPosition
+                if (pos !== RecyclerView.NO_POSITION) {
+                    val clickedItem = desordens[pos]
+                    this@AdapterListaDenuncias.confirmaDenuncia(it, clickedItem, 1, btnLike, btnDslike)
+                }
             }
             btnDslike.setOnClickListener{
-                this@AdapterListaDenuncias.dslikeDenuncia()
+                var pos = adapterPosition
+                if (pos !== RecyclerView.NO_POSITION) {
+                    val clickedItem = desordens[pos]
+                    this@AdapterListaDenuncias.confirmaDenuncia(it, clickedItem, 0, btnLike, btnDslike)
+                }
             }
         }
 //        val status = item.rv_disorder_status
@@ -53,15 +78,42 @@ class AdapterListaDenuncias(
             this.desordem.text = _den.des_descricao
             this.descricao.text = _den.den_descricao
 
-                Log.d("alonmota", "${Constant().API_URL}denuncia/uploads/${_den.img_idarquivo.toString()}")
-                val url = "${Constant().API_URL}denuncia/uploads/${_den.img_idarquivo.toString()}"
-                Picasso.get()
-                        .load(url)
-                        .resize(150, 150)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_local_see_black_24dp)
-                        .error(R.drawable.ic_local_see_black_24dp)
-                        .into(imagem)
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val iduser = prefs.getString("user_id", "")
+
+            val queue = Volley.newRequestQueue(context)
+            val urlC = "${Constant().API_URL}confirmacao/$iduser/${_den.den_iddenuncia}"
+            val stringRequest = StringRequest(Request.Method.GET, urlC,
+                    Response.Listener<String> { response ->
+                        if (response != null && response.isNotEmpty()) {
+                            val resp = JsonParser().parse(response).asJsonObject
+                            val confim = resp["con_confirmacao"].asInt
+
+                            if(confim == 1) {
+                                btnLike.setBackgroundResource(R.drawable.btn_fill)
+                            } else if (confim == 0) {
+                                btnDslike.setBackgroundResource(R.drawable.btn_fill_negative)
+                            }
+                        }
+                    },
+                    Response.ErrorListener {
+                        Toast.makeText(context, "Algo saiu errado, verifique as permissooes e tente novamente!", Toast.LENGTH_SHORT).show()
+                    })
+
+            // Add the request to the RequestQueue.
+            queue.add(stringRequest)
+
+
+
+            Log.d("alonmota", "${Constant().API_URL}denuncia/uploads/${_den.img_idarquivo.toString()}")
+            val url = "${Constant().API_URL}denuncia/uploads/${_den.img_idarquivo.toString()}"
+            Picasso.get()
+                    .load(url)
+                    .resize(150, 150)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_local_see_black_24dp)
+                    .error(R.drawable.ic_local_see_black_24dp)
+                    .into(imagem)
         }
     }
 
@@ -79,12 +131,51 @@ class AdapterListaDenuncias(
         holder.setValues(desordem)
     }
 
-    fun likeDenuncia( ) {
+    fun confirmaDenuncia(v: View, den: Denuncia, tipo: Int, btnLike: View, btnDslike: View) {
+        try {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(v.context)
+            val iduser = prefs.getString("user_id", "")
 
-    }
+            if (iduser.isNotEmpty()) {
+                val body = JSONObject()
+                body.put("iddenuncia", den.den_iddenuncia)
+                body.put("comentario", "")
+                body.put("confirmacao", tipo)
+                body.put("idusuario", iduser)
 
-    fun dslikeDenuncia( ) {
+                val requestQueue = Volley.newRequestQueue(v.context)
+                val url = "${Constant().API_URL}confirmacao"
+                val jsonObj = JsonObjectRequest(Request.Method.POST, url, body,
+                        Response.Listener<JSONObject> { response ->
+                            if(response.getBoolean("sucesso")) {
+                                Toast.makeText(v.context, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
 
+                                if (tipo == 1){
+                                    v.setBackgroundResource(R.drawable.btn_fill)
+                                    btnDslike.setBackgroundResource(R.drawable.input_border)
+                                }else if (tipo == 0){
+                                    v.setBackgroundResource(R.drawable.btn_fill_negative)
+                                    btnLike.setBackgroundResource(R.drawable.input_border)
+                                }
+
+
+                            } else {
+                                Toast.makeText(v.context, "Desculpe, ocorreu um erro!", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        Response.ErrorListener { error ->
+                            Log.d("RESPONSE", error.toString())
+                        }
+                )
+                requestQueue.add(jsonObj)
+            } else {
+                val intent = Intent(context, ActivityLogin::class.java)
+                this.context.startActivity(intent)
+            }
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 
 }

@@ -13,6 +13,7 @@ class Denuncia(
         var den_anonimato: Int?,
         var usu_nome: String?,
         var des_descricao: String?,
-        var img_idarquivo: String?
+        var img_idarquivo: String?,
+        var confirmacao: Int?
 ): Serializable {
 }

@@ -70,7 +70,8 @@ class FragmentListaDenuncias : Fragment() {
                                 den_anonimato = denuncia["den_anonimato"].asInt,
                                 usu_nome = denuncia["usu_nome"].asString,
                                 des_descricao = denuncia["des_descricao"].asString,
-                                img_idarquivo = nullAsString(denuncia["img_idarquivo"])
+                                img_idarquivo = nullAsString(denuncia["img_idarquivo"]),
+                                confirmacao = -1
                         )
                         arrayDisordem.add(denunciaTO)
 

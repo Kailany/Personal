@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.alonm.todeolho">
+    package="br.df.brasilia.unb.cic.todeolho">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ActivityHome">
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityHome">
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -37,15 +37,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityAddDisorder" />
-        <activity android:name=".ActivityCadastroPessoa" />
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityAddDisorder" />
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityCadastroPessoa" />
         <activity
-            android:name=".ActivityLogin"
+            android:name="br.df.brasilia.unb.cic.todeolho.ActivityLogin"
             android:label="@string/title_activity_login" />
-        <activity android:name=".ActivityMap" />
-        <activity android:name=".ActivityDetalheDenuncia" />
-        <activity android:name=".ActivityToDeOlho"></activity>
-        <activity android:name=".ActivityLocationSelect"></activity>
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityMap" />
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityDetalheDenuncia" />
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityToDeOlho"></activity>
+        <activity android:name="br.df.brasilia.unb.cic.todeolho.ActivityLocationSelect"></activity>
     </application>
 
 </manifest>

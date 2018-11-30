@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="30dp"
-    tools:context=".ActivityLogin">
+    tools:context="br.df.brasilia.unb.cic.todeolho.ActivityLogin">
 
     <!-- Login progress -->
     <ProgressBar
